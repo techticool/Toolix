@@ -1276,10 +1276,9 @@
             dnsSection.classList.add('hidden');
             if (testSection) testSection.classList.add('hidden');
 
-            // Hide IP results when leaving the IP tab
-            if (resultsSection) {
-                resultsSection.classList.add('hidden');
-            }
+            // Always hide IP results when not on IP tab (robust fix)
+            const results = document.getElementById('results-section');
+            if (results) results.classList.add('hidden');
 
             // Reset tab styles
             tabIP.classList.remove('bg-zinc-800', 'text-white');
@@ -1297,8 +1296,9 @@
                 tabIP.classList.remove('text-zinc-400');
 
                 // Restore results if user had performed a lookup before
-                if (resultsSection && window.hasIPResults) {
-                    resultsSection.classList.remove('hidden');
+                const res = document.getElementById('results-section');
+                if (res && window.hasIPResults) {
+                    res.classList.remove('hidden');
                 }
             } 
             else if (tab === 'dns') {
