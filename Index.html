@@ -3,7 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Primary Meta Tags -->
     <title>Toolix • IP &amp; DNS Tools</title>
+    <meta name="title" content="Toolix • IP &amp; DNS Tools">
+    <meta name="description" content="Fast IP geolocation, full DNS record lookup (including DNSSEC), and real-world DNS provider performance testing. Built for developers and sysadmins.">
+    <meta name="keywords" content="IP lookup, DNS lookup, DNS test, DNSSEC, geolocation, network tools, toolix">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://toolix.io/">
+    <meta property="og:title" content="Toolix • IP &amp; DNS Tools">
+    <meta property="og:description" content="Fast IP geolocation, full DNS record lookup (including DNSSEC), and real-world DNS provider performance testing.">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://toolix.io/">
+    <meta property="twitter:title" content="Toolix • IP &amp; DNS Tools">
+    <meta property="twitter:description" content="Fast IP geolocation, full DNS record lookup (including DNSSEC), and real-world DNS provider performance testing.">
+
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌐</text></svg>">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -131,7 +152,6 @@
                 </div>
             </div>
             
-            <!-- Tabs -->
             <div class="flex items-center gap-x-1 text-sm bg-zinc-900 border border-zinc-800 rounded-2xl p-1">
                 <button onclick="switchTab('ip')" id="tab-ip"
                         class="px-4 py-1.5 rounded-xl bg-zinc-800 text-white font-medium transition-all text-sm">IP</button>
@@ -150,18 +170,437 @@
 
     <!-- IP Lookup Section -->
     <div id="ip-section" class="max-w-screen-xl mx-auto px-6 pt-14 pb-10">
-        <!-- Your full IP Lookup content goes here -->
-        <!-- (The complete code from the current file) -->
+        <div class="max-w-2xl mx-auto text-center mb-10">
+            <div class="inline-flex items-center gap-x-2 px-4 py-1.5 rounded-3xl bg-zinc-900 border border-zinc-800 mb-6">
+                <span class="text-emerald-400 text-xs font-medium tracking-[1px]">TRUSTED BY 50K+ USERS</span>
+            </div>
+            
+            <h1 class="text-6xl md:text-7xl font-display tracking-tighter font-semibold mb-4">
+                Know every<br>IP address.
+            </h1>
+            <p class="text-xl text-zinc-400 max-w-md mx-auto">
+                Instant geolocation, ISP, hostname, network intelligence &amp; more.
+            </p>
+        </div>
+
+        <!-- Search Card -->
+        <div class="max-w-2xl mx-auto">
+            <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-2 shadow-2xl">
+                <form id="lookup-form" onsubmit="performLookup(event)" class="flex flex-col md:flex-row gap-2">
+                    <div class="flex-1 relative">
+                        <div class="absolute left-5 top-1/2 -mt-2 text-zinc-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </div>
+                        <input 
+                            type="text" 
+                            id="ip-input" 
+                            placeholder="Enter IP (8.8.8.8) or domain (google.com)"
+                            class="w-full bg-zinc-950 border border-zinc-800 focus:border-teal-600 transition-colors text-lg pl-12 pr-5 py-4 rounded-2xl outline-none placeholder:text-zinc-500"
+                            autocomplete="off"
+                        >
+                    </div>
+                    
+                    <div class="flex gap-2">
+                        <button 
+                            type="submit"
+                            class="flex-1 md:flex-none px-8 py-4 bg-teal-600 hover:bg-teal-700 active:bg-teal-800 transition-all text-white font-semibold rounded-2xl flex items-center justify-center gap-x-2 shadow-lg shadow-teal-950/50">
+                            <span>Lookup</span>
+                        </button>
+                        
+                        <button 
+                            type="button"
+                            onclick="useMyIP()"
+                            class="px-6 py-4 bg-zinc-800 hover:bg-zinc-700 transition-all text-white font-medium rounded-2xl flex items-center justify-center gap-x-2 border border-zinc-700">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314-11.314z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                            <span class="hidden sm:inline">My IP</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Quick examples -->
+            <div class="flex flex-wrap justify-center gap-2 mt-4">
+                <div onclick="quickLookup('8.8.8.8')" 
+                     class="cursor-pointer px-3.5 py-1 text-xs bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-2xl flex items-center gap-x-1.5 text-zinc-400 hover:text-zinc-300 transition-colors">
+                    <span>8.8.8.8</span>
+                    <span class="text-[10px] text-zinc-500">(Google DNS)</span>
+                </div>
+                <div onclick="quickLookup('1.1.1.1')" 
+                     class="cursor-pointer px-3.5 py-1 text-xs bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-2xl flex items-center gap-x-1.5 text-zinc-400 hover:text-zinc-300 transition-colors">
+                    <span>1.1.1.1</span>
+                    <span class="text-[10px] text-zinc-500">(Cloudflare)</span>
+                </div>
+                <div onclick="quickLookup('google.com')" 
+                     class="cursor-pointer px-3.5 py-1 text-xs bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-2xl flex items-center gap-x-1.5 text-zinc-400 hover:text-zinc-300 transition-colors">
+                    <span>google.com</span>
+                </div>
+                <div onclick="quickLookup('185.199.108.153')" 
+                     class="cursor-pointer px-3.5 py-1 text-xs bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-2xl flex items-center gap-x-1.5 text-zinc-400 hover:text-zinc-300 transition-colors">
+                    <span>GitHub</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Section -->
+    <div id="results-section" class="hidden max-w-screen-xl mx-auto px-6 pb-16">
+        <div class="flex items-center justify-between mb-6">
+            <div>
+                <span class="section-header">Results for</span>
+                <h2 id="result-query" class="font-display text-3xl tracking-tight font-semibold"></h2>
+            </div>
+            
+            <div class="flex items-center gap-x-3">
+                <button onclick="copyAllResults()" 
+                        class="flex items-center gap-x-2 px-4 py-2 text-sm bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 transition-colors rounded-2xl">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16v-4m4 4v4m4-8v8m4-4v-4m-16 8h16a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2" />
+                    </svg>
+                    <span>Copy all</span>
+                </button>
+                
+                <button onclick="exportJSON()" 
+                        class="flex items-center gap-x-2 px-4 py-2 text-sm bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 transition-colors rounded-2xl">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v-4m0 0l4 4m-4-4l4-4m12 0v4m0 0l-4-4m4 4l-4 4" />
+                    </svg>
+                    <span>Export JSON</span>
+                </button>
+                
+                <button onclick="resetResults()" 
+                        class="px-5 py-2 text-sm font-medium text-zinc-400 hover:text-zinc-200 transition-colors flex items-center gap-x-1.5">
+                    <span>New search</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            <!-- Overview Card -->
+            <div class="lg:col-span-5 bg-zinc-900 border border-zinc-800 rounded-3xl p-6 result-card">
+                <div class="section-header mb-4 flex items-center gap-x-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 4.01V8" />
+                    </svg>
+                    <span>OVERVIEW</span>
+                </div>
+                
+                <div class="space-y-5">
+                    <!-- IP Address -->
+                    <div class="info-row flex justify-between items-start px-1 py-1 rounded-xl -mx-1">
+                        <div>
+                            <div class="text-xs text-zinc-500 mb-px">IP ADDRESS</div>
+                            <div id="result-ip" class="ip-value text-2xl font-semibold tracking-tighter"></div>
+                        </div>
+                        <button onclick="copyField('result-ip', 'IP address')" 
+                                class="mt-1 p-2 text-zinc-400 hover:text-teal-400 hover:bg-zinc-800 rounded-xl transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.25" d="M8 16v-4m4 4v4m4-8v8m4-4v-4m-16 8h16a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2" />
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <!-- Hostname -->
+                    <div id="hostname-row" class="info-row flex justify-between items-start px-1 py-1 rounded-xl -mx-1">
+                        <div class="flex-1 min-w-0">
+                            <div class="text-xs text-zinc-500 mb-px">HOSTNAME / REVERSE DNS</div>
+                            <div id="result-hostname" class="ip-value text-lg font-medium text-emerald-300 break-all"></div>
+                        </div>
+                        <button onclick="copyField('result-hostname', 'Hostname')" 
+                                class="mt-1 p-2 text-zinc-400 hover:text-teal-400 hover:bg-zinc-800 rounded-xl transition-colors flex-shrink-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.25" d="M8 16v-4m4 4v4m4-8v8m4-4v-4m-16 8h16a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2" />
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <!-- Status -->
+                    <div class="flex items-center justify-between px-1">
+                        <div>
+                            <div class="text-xs text-zinc-500">STATUS</div>
+                            <div class="flex items-center gap-x-2 mt-1">
+                                <div id="status-badge" 
+                                     class="inline-flex items-center px-3 py-1 rounded-2xl text-sm font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+                                    SUCCESS
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Network Intelligence -->
+            <div class="lg:col-span-7 bg-zinc-900 border border-zinc-800 rounded-3xl p-6 result-card">
+                <div class="section-header mb-4 flex items-center gap-x-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2 2 2 0 012 2v2a2 2 0 01-2 2" />
+                    </svg>
+                    <span>NETWORK INTELLIGENCE</span>
+                </div>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-5">
+                    <div>
+                        <div class="text-xs text-zinc-500 mb-1">ISP / PROVIDER</div>
+                        <div id="result-isp" class="font-medium text-lg leading-tight"></div>
+                    </div>
+                    
+                    <div>
+                        <div class="text-xs text-zinc-500 mb-1">ORGANIZATION</div>
+                        <div id="result-org" class="font-medium text-lg leading-tight"></div>
+                    </div>
+                    
+                    <div>
+                        <div class="text-xs text-zinc-500 mb-1">ASN</div>
+                        <div id="result-as" class="font-mono text-base"></div>
+                    </div>
+                    
+                    <div>
+                        <div class="text-xs text-zinc-500 mb-1">AS NAME</div>
+                        <div id="result-asname" class="font-medium"></div>
+                    </div>
+                </div>
+                
+                <!-- Badges -->
+                <div id="badges-container" class="flex flex-wrap gap-2 mt-6 pt-5 border-t border-zinc-800"></div>
+            </div>
+
+            <!-- Location -->
+            <div class="lg:col-span-5 bg-zinc-900 border border-zinc-800 rounded-3xl p-6 result-card">
+                <div class="section-header mb-4 flex items-center gap-x-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314-11.314z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    <span>GEOLOCATION</span>
+                </div>
+                
+                <div class="space-y-4">
+                    <div class="flex items-center gap-x-4">
+                        <div id="flag-container" class="flex-shrink-0"></div>
+                        <div class="min-w-0">
+                            <div id="result-country" class="font-semibold text-2xl tracking-tight"></div>
+                            <div id="result-continent" class="text-sm text-zinc-400"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4 pt-2">
+                        <div>
+                            <div class="text-xs text-zinc-500">CITY</div>
+                            <div id="result-city" class="font-semibold text-xl"></div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-zinc-500">REGION / STATE</div>
+                            <div id="result-region" class="font-semibold text-xl"></div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-zinc-500">ZIP / POSTAL</div>
+                            <div id="result-zip" class="font-mono text-lg"></div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-zinc-500">TIMEZONE</div>
+                            <div id="result-timezone" class="font-medium"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Coordinates + Map -->
+            <div class="lg:col-span-7 bg-zinc-900 border border-zinc-800 rounded-3xl p-6 result-card flex flex-col">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="section-header flex items-center gap-x-2">
+                        <span>COORDINATES</span>
+                    </div>
+                    <a id="google-maps-link" href="#" target="_blank" 
+                       class="text-xs flex items-center gap-x-1 text-teal-400 hover:text-teal-300 transition-colors">
+                        VIEW ON GOOGLE MAPS 
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                    </a>
+                </div>
+                
+                <div class="flex items-baseline gap-x-3 mb-4">
+                    <div>
+                        <span class="text-xs text-zinc-500">LAT</span>
+                        <span id="result-lat" class="font-mono text-xl ml-1.5 font-medium"></span>
+                    </div>
+                    <div class="text-zinc-600">•</div>
+                    <div>
+                        <span class="text-xs text-zinc-500">LON</span>
+                        <span id="result-lon" class="font-mono text-xl ml-1.5 font-medium"></span>
+                    </div>
+                </div>
+                
+                <!-- Map -->
+                <div id="map-container" class="map-container flex-1 min-h-[260px] bg-zinc-950 rounded-2xl border border-zinc-800 overflow-hidden">
+                    <div id="map" class="w-full h-full"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Raw data toggle -->
+        <div class="mt-6 flex justify-center">
+            <button onclick="toggleRawData()" 
+                    class="text-xs flex items-center gap-x-2 px-4 py-2 text-zinc-400 hover:text-zinc-300 transition-colors">
+                <span>View raw API response</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 transition-transform" id="raw-arrow" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7" />
+                </svg>
+            </button>
+        </div>
+        
+        <div id="raw-data" class="hidden mt-3 max-w-screen-xl mx-auto">
+            <pre class="bg-zinc-950 border border-zinc-800 p-5 rounded-3xl text-xs overflow-auto max-h-72 text-emerald-300 font-mono"><code id="raw-json"></code></pre>
+        </div>
     </div>
 
     <!-- DNS Lookup Section -->
     <div id="dns-section" class="hidden max-w-screen-xl mx-auto px-6 pt-8 pb-16">
-        <!-- Your full DNS Lookup content -->
+        <div class="max-w-3xl mx-auto">
+            <!-- DNS Header -->
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center gap-x-2 px-4 py-1.5 rounded-3xl bg-zinc-900 border border-zinc-800 mb-4">
+                    <span class="text-emerald-400 text-xs font-medium tracking-[1px]">DNS + WHOIS</span>
+                </div>
+                <h2 class="text-4xl font-display tracking-tighter font-semibold mb-2">DNS Lookup</h2>
+                <p class="text-zinc-400">Query A, MX, CNAME, TXT, NS and more. Powered by Google DNS.</p>
+            </div>
+
+            <!-- DNS Search -->
+            <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-2 mb-6">
+                <div class="flex flex-col md:flex-row gap-2">
+                    <div class="flex-1 relative">
+                        <div class="absolute left-5 top-1/2 -mt-2 text-zinc-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </div>
+                        <input type="text" id="dns-input" placeholder="example.com" 
+                               class="w-full bg-zinc-950 border border-zinc-800 focus:border-teal-600 transition-colors text-lg pl-12 pr-5 py-4 rounded-2xl outline-none placeholder:text-zinc-500"
+                               onkeypress="if (event.key === 'Enter') performDNSLookup()">
+                    </div>
+                    <button onclick="performDNSLookup()" 
+                            class="px-8 py-4 bg-teal-600 hover:bg-teal-700 active:bg-teal-800 transition-all text-white font-semibold rounded-2xl">
+                        Lookup
+                    </button>
+                </div>
+            </div>
+
+            <!-- Quick Record Types -->
+            <div class="flex flex-wrap gap-2 mb-6 justify-center">
+                <button onclick="quickDNSLookup('A')" class="px-4 py-1.5 text-xs bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded-2xl transition-colors">A</button>
+                <button onclick="quickDNSLookup('AAAA')" class="px-4 py-1.5 text-xs bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded-2xl transition-colors">AAAA</button>
+                <button onclick="quickDNSLookup('MX')" class="px-4 py-1.5 text-xs bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded-2xl transition-colors">MX</button>
+                <button onclick="quickDNSLookup('CNAME')" class="px-4 py-1.5 text-xs bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded-2xl transition-colors">CNAME</button>
+                <button onclick="quickDNSLookup('TXT')" class="px-4 py-1.5 text-xs bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded-2xl transition-colors">TXT</button>
+                <button onclick="quickDNSLookup('NS')" class="px-4 py-1.5 text-xs bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded-2xl transition-colors">NS</button>
+                <button onclick="quickDNSLookup('SOA')" class="px-4 py-1.5 text-xs bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded-2xl transition-colors">SOA</button>
+                <button onclick="quickDNSLookup('DS')" class="px-4 py-1.5 text-xs bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded-2xl transition-colors">DS</button>
+                <button onclick="quickDNSLookup('DNSKEY')" class="px-4 py-1.5 text-xs bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded-2xl transition-colors">DNSKEY</button>
+                <button onclick="lookupAllRecords()" class="px-4 py-1.5 text-xs bg-teal-900/60 hover:bg-teal-900 border border-teal-700 text-teal-300 rounded-2xl transition-colors font-medium">Lookup All</button>
+            </div>
+
+            <!-- DNS Results -->
+            <div id="dns-results" class="hidden">
+                <div class="flex items-center justify-between mb-4 px-1">
+                    <div>
+                        <span class="text-xs text-zinc-500">RESULTS FOR</span>
+                        <div id="dns-query" class="font-mono text-xl font-semibold"></div>
+                    </div>
+                    <button onclick="clearDNSResults()" class="text-xs px-4 py-2 text-zinc-400 hover:text-zinc-200">Clear</button>
+                </div>
+
+                <div id="dns-records-container" class="space-y-3">
+                    <!-- Populated dynamically by JS -->
+                </div>
+
+                <!-- WHOIS Button -->
+                <div class="mt-6 flex justify-center">
+                    <button onclick="openWHOIS()" 
+                            class="flex items-center gap-x-2 px-5 py-2.5 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded-2xl text-sm transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 4.01V8" />
+                        </svg>
+                        <span>Open Full WHOIS</span>
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- DNS Provider Test Section -->
     <div id="test-section" class="hidden max-w-screen-xl mx-auto px-6 pt-8 pb-16">
-        <!-- Your full DNS Test content -->
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center gap-x-2 px-4 py-1.5 rounded-3xl bg-zinc-900 border border-zinc-800 mb-4">
+                    <span class="text-emerald-400 text-xs font-medium tracking-[1px]">NETWORK TEST</span>
+                </div>
+                <h2 class="text-4xl font-display tracking-tighter font-semibold mb-2">DNS Provider Test</h2>
+                <p class="text-zinc-400 max-w-md mx-auto">Test popular DNS providers from <strong>your network</strong> to find the fastest and most reliable one for you.</p>
+            </div>
+
+            <!-- Test Controls -->
+            <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-6 mb-6">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div>
+                        <div class="font-medium mb-1">Test Configuration</div>
+                        <div class="text-sm text-zinc-400">Runs 5 queries per provider • Measures real latency from your browser</div>
+                    </div>
+                    <button onclick="runDNSTest()" 
+                            class="px-8 py-3 bg-teal-600 hover:bg-teal-700 active:bg-teal-800 transition-all text-white font-semibold rounded-2xl flex items-center gap-x-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 4.01V8" />
+                        </svg>
+                        <span>Run Full Test</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Results Table -->
+            <div id="test-results" class="hidden bg-zinc-900 border border-zinc-800 rounded-3xl overflow-hidden">
+                <table class="w-full">
+                    <thead>
+                        <tr class="bg-zinc-950 text-left text-xs text-zinc-400">
+                            <th class="px-6 py-4 font-medium">Provider</th>
+                            <th class="px-4 py-4 font-medium text-right">Avg Latency</th>
+                            <th class="px-4 py-4 font-medium text-center">Success</th>
+                            <th class="px-4 py-4 font-medium text-center">DNSSEC</th>
+                            <th class="px-6 py-4 font-medium">Recommendation</th>
+                        </tr>
+                    </thead>
+                    <tbody id="test-results-body" class="divide-y divide-zinc-800 text-sm">
+                        <!-- Populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Custom DoH Endpoint -->
+            <div class="mt-8 bg-zinc-900 border border-zinc-800 rounded-3xl p-6">
+                <div class="font-medium mb-3 flex items-center gap-x-2">
+                    <span>Test Custom DoH Endpoint</span>
+                    <span class="text-[10px] px-2 py-0.5 bg-zinc-800 rounded text-zinc-400">Advanced</span>
+                </div>
+                <div class="flex flex-col md:flex-row gap-3">
+                    <input type="text" id="custom-doh-input" placeholder="https://your-doh-server.com/dns-query" 
+                           class="flex-1 bg-zinc-950 border border-zinc-700 focus:border-teal-600 transition-colors px-4 py-3 rounded-2xl text-sm placeholder:text-zinc-500">
+                    <button onclick="testCustomEndpoint()" 
+                            class="px-6 py-3 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded-2xl text-sm font-medium transition-colors">
+                        Test Custom
+                    </button>
+                </div>
+                <div class="text-xs text-zinc-500 mt-2">Enter any DNS-over-HTTPS endpoint that supports the <code class="font-mono">application/dns-json</code> format.</div>
+            </div>
+
+            <div class="mt-6 text-center text-xs text-zinc-500">
+                Tests use DNS over HTTPS (DoH) from your browser. Results reflect real-world performance from your location and ISP.
+            </div>
+        </div>
     </div>
 
     <!-- Toast Container -->
@@ -184,10 +623,1060 @@
         </div>
     </footer>
 
-    <!-- Full JavaScript (all functions: IP, DNS, DNS Test, etc.) -->
     <script>
-        // All your JavaScript code goes here
-        // (switchTab, performLookup, runDNSTest, etc.)
+        // Tailwind script configuration
+        function initializeTailwind() {
+            document.documentElement.style.setProperty('--accent', '#0ea5e9');
+        }
+        
+        let mapInstance = null;
+        let currentMarker = null;
+        let currentData = null;
+
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            
+            const toast = document.createElement('div');
+            toast.className = `toast flex items-center gap-x-3 px-5 py-3.5 rounded-2xl shadow-2xl border text-sm max-w-xs ${
+                type === 'success' 
+                    ? 'bg-zinc-900 border-emerald-600/40 text-emerald-300' 
+                    : 'bg-zinc-900 border-red-600/40 text-red-300'
+            }`;
+            
+            toast.innerHTML = `
+                <div class="flex-1">${message}</div>
+                <button onclick="this.parentElement.remove()" class="text-xs px-2 py-1 opacity-60 hover:opacity-100">×</button>
+            `;
+            
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                if (toast.parentElement) toast.parentElement.removeChild(toast);
+            }, 2800);
+        }
+
+        function copyToClipboard(text, label = '') {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast(label ? `${label} copied to clipboard` : 'Copied to clipboard');
+            }).catch(() => {
+                // Fallback
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showToast(label ? `${label} copied` : 'Copied');
+            });
+        }
+
+        function copyField(elementId, label) {
+            const el = document.getElementById(elementId);
+            if (el && el.textContent.trim()) {
+                copyToClipboard(el.textContent.trim(), label);
+            }
+        }
+
+        async function performLookup(e) {
+            if (e) e.preventDefault();
+            
+            const input = document.getElementById('ip-input').value.trim();
+            if (!input) {
+                showToast('Please enter an IP address or domain', 'error');
+                return;
+            }
+            
+            await lookupIP(input);
+        }
+
+        async function quickLookup(value) {
+            document.getElementById('ip-input').value = value;
+            await lookupIP(value);
+        }
+
+        async function useMyIP() {
+            const btns = document.querySelectorAll('button');
+            btns.forEach(b => b.disabled = true);
+            
+            try {
+                showToast('Detecting your IP address...');
+                await lookupIP(''); // empty = own IP
+            } finally {
+                btns.forEach(b => b.disabled = false);
+            }
+        }
+
+        async function lookupIP(query) {
+            const resultsSection = document.getElementById('results-section');
+            const form = document.getElementById('lookup-form');
+            
+            // Show loading state
+            const originalText = form ? form.innerHTML : '';
+            resultsSection.classList.add('hidden');
+
+            const maxRetries = 3;
+            let lastErrorMessage = 'Unknown error';
+
+            for (let attempt = 1; attempt <= maxRetries; attempt++) {
+                try {
+                    // Update loading UI with retry status
+                    if (form) {
+                        const isRetry = attempt > 1;
+                        form.innerHTML = `
+                            <div class="flex-1 flex items-center justify-center py-4 text-teal-400">
+                                <svg class="animate-spin h-5 w-5 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                <span class="font-medium">
+                                    ${isRetry 
+                                        ? `Retrying automatically (${attempt}/${maxRetries})...` 
+                                        : `Looking up ${query || 'your IP'}...`}
+                                </span>
+                            </div>
+                        `;
+                    }
+
+                    let url = 'https://ipapi.co/';
+                    if (query) {
+                        url += encodeURIComponent(query) + '/json/';
+                    } else {
+                        url += 'json/';
+                    }
+                    
+                    const response = await fetch(url);
+                    const data = await response.json();
+                    
+                    if (!data.error && data.ip) {
+                        // Success!
+                        currentData = data;
+                        displayResults(data);
+                        resultsSection.classList.remove('hidden');
+                        resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        
+                        try {
+                            localStorage.setItem('lastIPLookup', JSON.stringify({
+                                query: query || data.ip,
+                                timestamp: Date.now()
+                            }));
+                        } catch(e){}
+                        
+                        return; // Exit successfully
+                    } else {
+                        // API returned an error
+                        lastErrorMessage = data.reason || data.message || 'Lookup failed';
+                        
+                        const errorLower = lastErrorMessage.toLowerCase();
+                        const isRetryable = errorLower.includes('rate') || 
+                                            errorLower.includes('limit') || 
+                                            errorLower.includes('temporary') ||
+                                            errorLower.includes('try again');
+                        
+                        if (!isRetryable || attempt === maxRetries) {
+                            // Final failure or non-retryable error
+                            showError(lastErrorMessage + (attempt > 1 ? ' (after retries)' : ''));
+                            if (form) form.innerHTML = originalText;
+                            return;
+                        }
+                        
+                        // Show visible toast for retry
+                        showToast(`Rate limited — retrying automatically (${attempt}/${maxRetries})...`, 'success');
+                        
+                        // Wait with exponential backoff before next retry
+                        const delayMs = 800 * Math.pow(2, attempt - 1);
+                        await new Promise(resolve => setTimeout(resolve, delayMs));
+                    }
+                } catch (error) {
+                    // Network or fetch error
+                    console.error(`Attempt ${attempt} failed:`, error);
+                    lastErrorMessage = error.message || 'Network error';
+                    
+                    if (attempt === maxRetries) {
+                        let errorMsg = 'Network error after multiple automatic retries.';
+                        
+                        if (window.location.protocol === 'file:') {
+                            errorMsg += ' You appear to have opened the HTML file directly (file:// protocol). Most browsers block external API calls from local files for security reasons.\n\nPlease serve the file using a local web server instead:\n• VS Code: Right-click the file → "Open with Live Server"\n• Terminal: Run `python -m http.server` in this folder, then open http://localhost:8000/ip-lookup.html';
+                        } else {
+                            errorMsg += ' Please check your internet connection and try again.';
+                        }
+                        
+                        showError(errorMsg);
+                        if (form) form.innerHTML = originalText;
+                        return;
+                    }
+                    
+                    // Show visible toast for retry
+                    showToast(`Network issue — retrying automatically (${attempt}/${maxRetries})...`, 'success');
+                    
+                    // Wait before retrying
+                    const delayMs = 800 * Math.pow(2, attempt - 1);
+                    await new Promise(resolve => setTimeout(resolve, delayMs));
+                }
+            }
+        }
+
+        function showError(message) {
+            const resultsSection = document.getElementById('results-section');
+            resultsSection.classList.add('hidden');
+            
+            // Create error alert
+            const existing = document.getElementById('error-alert');
+            if (existing) existing.remove();
+            
+            const alert = document.createElement('div');
+            alert.id = 'error-alert';
+            alert.className = `max-w-2xl mx-auto mt-4 px-5 py-4 bg-red-950/60 border border-red-900 text-red-300 rounded-3xl flex items-start gap-x-3`;
+            alert.innerHTML = `
+                <div class="mt-0.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                </div>
+                <div class="flex-1 text-sm">
+                    <div class="font-semibold mb-px">Lookup failed</div>
+                    <div class="whitespace-pre-line">${message}</div>
+                </div>
+                
+                <div class="flex items-center gap-x-2 flex-shrink-0">
+                    <button onclick="this.closest('#error-alert').remove(); document.getElementById('ip-input').focus()" 
+                            class="text-xs px-3.5 py-1.5 bg-red-900/40 hover:bg-red-900/70 rounded-2xl transition-colors font-medium">Try again</button>
+                    
+                    <button onclick="this.closest('#error-alert').remove()" 
+                            class="text-red-400 hover:text-red-200 p-1 transition-colors" aria-label="Close error">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6h12v12" />
+                        </svg>
+                    </button>
+                </div>
+            `;
+            
+            const lookupSection = document.getElementById('lookup-section');
+            lookupSection.parentNode.insertBefore(alert, lookupSection.nextSibling);
+        }
+
+        function displayResults(data) {
+            // Hide any previous error
+            const errorAlert = document.getElementById('error-alert');
+            if (errorAlert) errorAlert.remove();
+            
+            // Restore form
+            const form = document.getElementById('lookup-form');
+            if (form && form.innerHTML.includes('Looking up')) {
+                form.innerHTML = `
+                    <div class="flex-1 relative">
+                        <div class="absolute left-5 top-1/2 -mt-2 text-zinc-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </div>
+                        <input type="text" id="ip-input" placeholder="Enter IP (8.8.8.8) or domain (google.com)" 
+                               class="w-full bg-zinc-950 border border-zinc-800 focus:border-teal-600 transition-colors text-lg pl-12 pr-5 py-4 rounded-2xl outline-none placeholder:text-zinc-500" autocomplete="off">
+                    </div>
+                    <div class="flex gap-2">
+                        <button type="submit" class="flex-1 md:flex-none px-8 py-4 bg-teal-600 hover:bg-teal-700 active:bg-teal-800 transition-all text-white font-semibold rounded-2xl flex items-center justify-center gap-x-2 shadow-lg shadow-teal-950/50">
+                            <span>Lookup</span>
+                        </button>
+                        <button type="button" onclick="useMyIP()" class="px-6 py-4 bg-zinc-800 hover:bg-zinc-700 transition-all text-white font-medium rounded-2xl flex items-center justify-center gap-x-2 border border-zinc-700">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314-11.314z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                            <span class="hidden sm:inline">My IP</span>
+                        </button>
+                    </div>
+                `;
+                // Re-attach form submit
+                form.onsubmit = performLookup;
+            }
+            
+            // Populate basic info
+            document.getElementById('result-query').textContent = data.ip || '—';
+            document.getElementById('result-ip').textContent = data.ip || '—';
+            
+            // Hostname / Reverse DNS (ipapi.co does not provide reverse DNS in free tier)
+            const hostnameEl = document.getElementById('result-hostname');
+            const hostnameRow = document.getElementById('hostname-row');
+            hostnameEl.textContent = 'No reverse DNS record (free tier)';
+            hostnameEl.className = 'ip-value text-lg font-medium text-zinc-400 italic';
+            hostnameRow.style.display = '';
+            
+            // ISP & Org
+            document.getElementById('result-isp').textContent = data.org || 'Unknown';
+            document.getElementById('result-org').textContent = data.org || 'Unknown';
+            document.getElementById('result-as').textContent = data.asn || '—';
+            document.getElementById('result-asname').textContent = data.org || '—';
+            
+            // Location
+            const flagContainer = document.getElementById('flag-container');
+            flagContainer.innerHTML = '';
+            
+            if (data.country) {
+                const flagImg = document.createElement('img');
+                flagImg.src = `https://flagcdn.com/w80/${data.country.toLowerCase()}.png`;
+                flagImg.className = 'w-11 h-auto rounded-md border border-zinc-700 shadow-sm';
+                flagImg.alt = data.country_name || data.country || '';
+                flagImg.onerror = () => flagImg.style.display = 'none';
+                flagContainer.appendChild(flagImg);
+            }
+            
+            document.getElementById('result-country').innerHTML = `
+                ${data.country_name || data.country || 'Unknown'} 
+                <span class="text-xs font-mono align-super text-zinc-500">${data.country || ''}</span>
+            `;
+            
+            document.getElementById('result-continent').textContent = data.continent_code || '';
+            document.getElementById('result-city').textContent = data.city || '—';
+            document.getElementById('result-region').textContent = data.region || '—';
+            document.getElementById('result-zip').textContent = data.postal || '—';
+            
+            // Timezone
+            let tzText = data.timezone || '—';
+            if (data.utc_offset) {
+                tzText += ` (${data.utc_offset})`;
+            }
+            document.getElementById('result-timezone').textContent = tzText;
+            
+            // Coordinates
+            const lat = data.latitude;
+            const lon = data.longitude;
+            document.getElementById('result-lat').textContent = typeof lat === 'number' ? lat.toFixed(5) : '—';
+            document.getElementById('result-lon').textContent = typeof lon === 'number' ? lon.toFixed(5) : '—';
+            
+            // Google Maps link
+            const mapsLink = document.getElementById('google-maps-link');
+            if (typeof lat === 'number' && typeof lon === 'number') {
+                mapsLink.href = `https://www.google.com/maps?q=${lat},${lon}`;
+                mapsLink.style.display = '';
+            } else {
+                mapsLink.style.display = 'none';
+            }
+            
+            // Badges for proxy / hosting
+            renderBadges(data);
+            
+            // Initialize / update map
+            if (typeof lat === 'number' && typeof lon === 'number') {
+                initOrUpdateMap(lat, lon, data);
+            } else {
+                document.getElementById('map-container').innerHTML = `
+                    <div class="h-[260px] flex items-center justify-center text-zinc-500 text-sm">
+                        No geographic coordinates available for this IP
+                    </div>
+                `;
+            }
+            
+            // Raw JSON
+            document.getElementById('raw-json').textContent = JSON.stringify(data, null, 2);
+            
+            // Store current data globally
+            currentData = data;
+        }
+
+        function renderBadges(data) {
+            const container = document.getElementById('badges-container');
+            container.innerHTML = '';
+            
+            // ipapi.co free tier has limited security fields, so we show a generic badge
+            const badge = createBadge('Network info available', 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30');
+            container.appendChild(badge);
+        }
+
+        function createBadge(text, classes) {
+            const div = document.createElement('div');
+            div.className = `inline-flex items-center px-3.5 py-1 text-xs font-medium rounded-2xl border ${classes}`;
+            div.innerHTML = `<span>${text}</span>`;
+            return div;
+        }
+
+        function initOrUpdateMap(lat, lon, data) {
+            const mapContainer = document.getElementById('map-container');
+            
+            // Clear previous content if needed
+            if (!document.getElementById('map')) {
+                mapContainer.innerHTML = `<div id="map" class="w-full h-full"></div>`;
+            }
+            
+            const mapEl = document.getElementById('map');
+            
+            if (!mapInstance) {
+                mapInstance = L.map(mapEl, {
+                    zoomControl: true,
+                    attributionControl: false
+                }).setView([lat, lon], 11);
+                
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    className: 'map-tiles'
+                }).addTo(mapInstance);
+            } else {
+                mapInstance.setView([lat, lon], 11);
+            }
+            
+            // Remove old marker
+            if (currentMarker) {
+                mapInstance.removeLayer(currentMarker);
+            }
+            
+            const popupContent = `
+                <div class="text-sm">
+                    <div class="font-semibold mb-1">${data.ip}</div>
+                    <div class="text-emerald-300">${data.city || ''}${data.city && data.region ? ', ' : ''}${data.region || ''}</div>
+                    <div class="text-xs text-zinc-400 mt-1">${data.org || ''}</div>
+                </div>
+            `;
+            
+            currentMarker = L.marker([lat, lon], {
+                icon: L.divIcon({
+                    className: 'custom-marker',
+                    html: `<div style="background:#0ea5e9; width:18px; height:18px; border:3px solid white; border-radius:9999px; box-shadow:0 0 0 3px rgba(14,165,233,0.3);"></div>`,
+                    iconSize: [18, 18],
+                    iconAnchor: [9, 9]
+                })
+            }).addTo(mapInstance);
+            
+            currentMarker.bindPopup(popupContent, {
+                closeButton: true,
+                offset: [0, -2]
+            }).openPopup();
+            
+            // Allow clicking map to open Google Maps
+            mapInstance.on('click', () => {
+                window.open(`https://www.google.com/maps?q=${lat},${lon}`, '_blank');
+            });
+        }
+
+        function toggleRawData() {
+            const raw = document.getElementById('raw-data');
+            const arrow = document.getElementById('raw-arrow');
+            
+            if (raw.classList.contains('hidden')) {
+                raw.classList.remove('hidden');
+                arrow.style.transform = 'rotate(180deg)';
+            } else {
+                raw.classList.add('hidden');
+                arrow.style.transform = '';
+            }
+        }
+
+        function copyAllResults() {
+            if (!currentData) return;
+            
+            const d = currentData;
+            let text = `Toolix IP - Lookup Report\n`;
+            text += `===========================\n\n`;
+            text += `IP Address: ${d.ip || d.query}\n`;
+            text += `ISP / Org: ${d.org || '—'}\n`;
+            text += `ASN: ${d.asn || '—'}\n\n`;
+            text += `Location:\n`;
+            text += `  ${d.city || ''}, ${d.region || ''}\n`;
+            text += `  ${d.country_name || d.country || ''} (${d.country || ''})\n`;
+            text += `  Zip: ${d.postal || '—'}\n`;
+            text += `  Timezone: ${d.timezone || '—'}${d.utc_offset ? ' (' + d.utc_offset + ')' : ''}\n`;
+            text += `  Coordinates: ${d.latitude}, ${d.longitude}\n\n`;
+            text += `\nGenerated: ${new Date().toLocaleString()}\n`;
+            text += `Source: ipapi.co`;
+            
+            copyToClipboard(text, 'Full report');
+        }
+
+        function exportJSON() {
+            if (!currentData) return;
+            
+            const dataStr = JSON.stringify(currentData, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `ip-lookup-${currentData.query || 'result'}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showToast('JSON file downloaded');
+        }
+
+        function resetResults() {
+            const resultsSection = document.getElementById('results-section');
+            resultsSection.classList.add('hidden');
+            
+            // Clear map if exists
+            if (mapInstance) {
+                mapInstance.remove();
+                mapInstance = null;
+                currentMarker = null;
+            }
+            
+            // Clear input
+            document.getElementById('ip-input').value = '';
+            document.getElementById('ip-input').focus();
+            
+            currentData = null;
+        }
+
+        function showAbout() {
+            const modal = document.createElement('div');
+            modal.className = `fixed inset-0 bg-black/70 backdrop-blur-sm z-[100] flex items-center justify-center p-6`;
+            modal.innerHTML = `
+                <div onclick="event.target.remove()" class="absolute inset-0"></div>
+                <div onclick="event.target.closest('.modal-content').classList.contains('modal-content') && event.stopImmediatePropagation()" 
+                     class="modal-content relative bg-zinc-900 border border-zinc-700 max-w-lg w-full rounded-3xl p-8 shadow-2xl">
+                    <div class="flex justify-between items-start mb-6">
+                        <div>
+                            <div class="font-display text-2xl tracking-tight">About Toolix IP</div>
+                            <div class="text-xs text-emerald-400 mt-1">v1.0 • toolix.io</div>
+                        </div>
+                        <button onclick="this.closest('.fixed').remove()" class="text-2xl leading-none text-zinc-400 hover:text-white">×</button>
+                    </div>
+                    
+                    <div class="prose prose-invert text-sm text-zinc-300 space-y-4">
+                        <p>Toolix IP is a fast, clean IP lookup tool with a Unix-inspired feel. Built for developers, sysadmins, and anyone who values clarity and speed.</p>
+                        
+                        <div>
+                            <div class="font-semibold text-xs tracking-widest text-zinc-400 mb-1.5">DATA SOURCES</div>
+                            <ul class="list-disc pl-5 space-y-1 text-xs">
+                                <li>Geolocation, ISP &amp; network data from <span class="font-mono text-emerald-300">ipapi.co</span> (free tier)</li>
+                                <li>Interactive maps powered by <span class="font-mono text-emerald-300">Leaflet</span> + OpenStreetMap</li>
+                            </ul>
+                        </div>
+                        
+                        <div>
+                            <div class="font-semibold text-xs tracking-widest text-zinc-400 mb-1.5">LIMITATIONS</div>
+                            <ul class="list-disc pl-5 space-y-1 text-xs">
+                                <li>Free API usage is generous (occasional rate limiting may still apply during heavy use)</li>
+                                <li>Some IPs (especially private/reserved ranges) return limited or no data</li>
+                                <li>Reverse DNS is not always available</li>
+                                <li>This is a client-side demo — no data is stored on any server</li>
+                            </ul>
+                        </div>
+                        
+                        <p class="text-xs pt-2 border-t border-zinc-800">Built as a self-contained single-file website. Feel free to save it locally and use offline for cached lookups (after first use).</p>
+                    </div>
+                    
+                    <div class="mt-8 flex justify-end">
+                        <button onclick="this.closest('.fixed').remove()" 
+                                class="px-6 py-2.5 text-sm rounded-2xl bg-zinc-800 hover:bg-zinc-700 transition-colors">Close</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        // Keyboard shortcuts
+        function setupKeyboardShortcuts() {
+            document.addEventListener('keydown', function(e) {
+                if (e.key === '/' && document.activeElement.tagName === 'BODY') {
+                    e.preventDefault();
+                    const input = document.getElementById('ip-input');
+                    input.focus();
+                    input.select();
+                }
+                
+                if (e.metaKey && e.key === 'k') {
+                    e.preventDefault();
+                    const input = document.getElementById('ip-input');
+                    input.focus();
+                    input.select();
+                }
+                
+                if (e.key === 'Escape') {
+                    const results = document.getElementById('results-section');
+                    if (!results.classList.contains('hidden')) {
+                        resetResults();
+                    } else {
+                        const modals = document.querySelectorAll('.fixed.inset-0');
+                        if (modals.length) modals[modals.length-1].remove();
+                    }
+                }
+            });
+            
+            // Show hint in console for power users
+            console.log('%c[Toolix] Tip: Press "/" or Cmd+K to focus the search input', 'color:#3f3f46');
+        }
+
+        // Initialize everything
+        function initializeApp() {
+            initializeTailwind();
+            setupKeyboardShortcuts();
+            
+            // Prefill a popular example on first load (optional)
+            // document.getElementById('ip-input').value = '8.8.8.8';
+            
+            // Check for last lookup (nice touch)
+            try {
+                const last = localStorage.getItem('lastIPLookup');
+                if (last) {
+                    const parsed = JSON.parse(last);
+                    // Could show a "last searched" pill but skipped for cleanliness
+                }
+            } catch(e){}
+            
+            // Make sure map container has proper height initially
+            const mapContainer = document.getElementById('map-container');
+            if (mapContainer) {
+                mapContainer.style.minHeight = '260px';
+            }
+            
+            // Bonus: allow pressing Enter in input even if form not perfectly attached
+            const input = document.getElementById('ip-input');
+            if (input) {
+                input.addEventListener('keypress', function(ev) {
+                    if (ev.key === 'Enter') {
+                        const form = document.getElementById('lookup-form');
+                        if (form) form.dispatchEvent(new Event('submit'));
+                    }
+                });
+            }
+            
+            // Easter egg: click logo to reset everything
+            const logo = document.querySelector('.font-display');
+            if (logo) {
+                logo.style.cursor = 'pointer';
+                logo.addEventListener('click', () => {
+                    const results = document.getElementById('results-section');
+                    if (!results.classList.contains('hidden')) {
+                        resetResults();
+                    } else {
+                        document.getElementById('ip-input').focus();
+                    }
+                });
+            }
+            
+            // Welcome toast for first-time visitors (subtle)
+            setTimeout(() => {
+                if (!localStorage.getItem('ipScoutVisited')) {
+                    // Uncomment if you want a welcome message:
+                    // showToast('Welcome! Try searching any IP or domain.');
+                    localStorage.setItem('ipScoutVisited', 'true');
+                }
+            }, 1800);
+            
+            // Accessibility: announce ready
+            console.log('%c[Toolix] Website ready — fully functional IP lookup tool initialized.', 'color:#64748b');
+        }
+
+        // ===================== DNS LOOKUP FUNCTIONS =====================
+
+        let currentDNSDomain = '';
+
+        function switchTab(tab) {
+            const ipSection = document.getElementById('ip-section');
+            const dnsSection = document.getElementById('dns-section');
+            const testSection = document.getElementById('test-section');
+            const tabIP = document.getElementById('tab-ip');
+            const tabDNS = document.getElementById('tab-dns');
+            const tabTest = document.getElementById('tab-test');
+
+            // Hide all
+            ipSection.classList.add('hidden');
+            dnsSection.classList.add('hidden');
+            if (testSection) testSection.classList.add('hidden');
+
+            // Reset all tabs
+            tabIP.classList.remove('bg-zinc-800', 'text-white');
+            tabIP.classList.add('text-zinc-400');
+            tabDNS.classList.remove('bg-zinc-800', 'text-white');
+            tabDNS.classList.add('text-zinc-400');
+            if (tabTest) {
+                tabTest.classList.remove('bg-zinc-800', 'text-white');
+                tabTest.classList.add('text-zinc-400');
+            }
+
+            if (tab === 'ip') {
+                ipSection.classList.remove('hidden');
+                tabIP.classList.add('bg-zinc-800', 'text-white');
+                tabIP.classList.remove('text-zinc-400');
+            } else if (tab === 'dns') {
+                dnsSection.classList.remove('hidden');
+                tabDNS.classList.add('bg-zinc-800', 'text-white');
+                tabDNS.classList.remove('text-zinc-400');
+            } else if (tab === 'test') {
+                if (testSection) testSection.classList.remove('hidden');
+                if (tabTest) {
+                    tabTest.classList.add('bg-zinc-800', 'text-white');
+                    tabTest.classList.remove('text-zinc-400');
+                }
+            }
+        }
+
+        async function performDNSLookup() {
+            const input = document.getElementById('dns-input').value.trim();
+            if (!input) {
+                showToast('Please enter a domain name', 'error');
+                return;
+            }
+            await queryDNSRecord(input, null); // null = lookup all common types
+        }
+
+        async function quickDNSLookup(type) {
+            const input = document.getElementById('dns-input').value.trim();
+            if (!input) {
+                showToast('Please enter a domain first', 'error');
+                return;
+            }
+            await queryDNSRecord(input, type);
+        }
+
+        async function lookupAllRecords() {
+            const input = document.getElementById('dns-input').value.trim();
+            if (!input) {
+                showToast('Please enter a domain first', 'error');
+                return;
+            }
+            await queryDNSRecord(input, 'ALL');
+        }
+
+        async function queryDNSRecord(domain, recordType) {
+            const resultsContainer = document.getElementById('dns-results');
+            const recordsContainer = document.getElementById('dns-records-container');
+            const queryDisplay = document.getElementById('dns-query');
+
+            currentDNSDomain = domain;
+            queryDisplay.textContent = domain;
+            recordsContainer.innerHTML = '';
+            resultsContainer.classList.remove('hidden');
+
+            showToast('Querying DNS...', 'success');
+
+            const typesToQuery = recordType === 'ALL' 
+                ? ['A', 'AAAA', 'MX', 'CNAME', 'TXT', 'NS', 'SOA', 'DS', 'DNSKEY'] 
+                : recordType ? [recordType] : ['A', 'MX', 'CNAME', 'TXT', 'NS'];
+
+            let hasResults = false;
+            let dnssecValidated = null; // Will be set from first response that has AD flag
+
+            for (const type of typesToQuery) {
+                try {
+                    const url = `https://dns.google/resolve?name=${encodeURIComponent(domain)}&type=${type}`;
+                    const response = await fetch(url);
+                    const data = await response.json();
+
+                    // Capture DNSSEC status from the first response
+                    if (dnssecValidated === null && typeof data.AD === 'boolean') {
+                        dnssecValidated = data.AD;
+                    }
+
+                    if (data.Answer && data.Answer.length > 0) {
+                        hasResults = true;
+                        renderDNSRecords(type, data.Answer, recordsContainer);
+                    }
+                } catch (err) {
+                    console.error(`Failed to fetch ${type} records:`, err);
+                }
+            }
+
+            // Show DNSSEC status banner if we have information
+            if (dnssecValidated !== null) {
+                const statusBanner = document.createElement('div');
+                if (dnssecValidated) {
+                    statusBanner.className = `mb-4 px-4 py-3 bg-emerald-950/60 border border-emerald-800 rounded-3xl flex items-center gap-x-3 text-sm`;
+                    statusBanner.innerHTML = `
+                        <div class="text-emerald-400">●</div>
+                        <div>
+                            <span class="font-medium text-emerald-300">DNSSEC Validated</span>
+                            <span class="text-emerald-400/70 ml-2">• Authenticated Data (AD) flag is set</span>
+                        </div>
+                    `;
+                } else {
+                    statusBanner.className = `mb-4 px-4 py-3 bg-amber-950/60 border border-amber-800 rounded-3xl flex items-center gap-x-3 text-sm`;
+                    statusBanner.innerHTML = `
+                        <div class="text-amber-400">●</div>
+                        <div>
+                            <span class="font-medium text-amber-300">DNSSEC Not Validated</span>
+                            <span class="text-amber-400/70 ml-2">• No authenticated data from resolver</span>
+                        </div>
+                    `;
+                }
+                recordsContainer.prepend(statusBanner);
+            }
+
+            if (!hasResults) {
+                recordsContainer.innerHTML = `
+                    <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-6 text-center text-zinc-400">
+                        No DNS records found for this domain.
+                    </div>
+                `;
+            }
+        }
+
+        function renderDNSRecords(type, answers, container) {
+            const section = document.createElement('div');
+            section.className = `bg-zinc-900 border border-zinc-800 rounded-3xl overflow-hidden`;
+
+            let html = `
+                <div class="px-5 py-3 bg-zinc-950 flex items-center justify-between">
+                    <div class="flex items-center gap-x-3">
+                        <span class="font-mono text-sm px-3 py-0.5 bg-zinc-800 rounded-xl text-teal-300">${type}</span>
+                        <span class="text-sm text-zinc-400">${answers.length} record${answers.length > 1 ? 's' : ''}</span>
+                    </div>
+                </div>
+                <div class="divide-y divide-zinc-800">
+            `;
+
+            answers.forEach(record => {
+                const data = record.data || '';
+                const ttl = record.TTL || '';
+
+                html += `
+                    <div class="px-5 py-4 flex items-start justify-between gap-4 group">
+                        <div class="flex-1 min-w-0">
+                            <div class="font-mono text-sm break-all text-zinc-200">${data}</div>
+                            ${ttl ? `<div class="text-[10px] text-zinc-500 mt-1">TTL: ${ttl}s</div>` : ''}
+                        </div>
+                        <button onclick="copyToClipboard('${data.replace(/'/g, "\\'")}', '${type} record')" 
+                                class="opacity-0 group-hover:opacity-100 p-2 text-zinc-400 hover:text-teal-400 transition-all flex-shrink-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16v-4m4 4v4m4-8v8m4-4v-4m-16 8h16a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2" />
+                            </svg>
+                        </button>
+                    </div>
+                `;
+            });
+
+            html += `</div>`;
+            section.innerHTML = html;
+            container.appendChild(section);
+        }
+
+        function clearDNSResults() {
+            document.getElementById('dns-results').classList.add('hidden');
+            document.getElementById('dns-records-container').innerHTML = '';
+            document.getElementById('dns-input').value = '';
+        }
+
+        function openWHOIS() {
+            if (!currentDNSDomain) {
+                showToast('Please perform a DNS lookup first', 'error');
+                return;
+            }
+            window.open(`https://who.is/whois/${currentDNSDomain}`, '_blank');
+        }
+
+        // ===================== DNS PROVIDER TEST =====================
+
+        const dnsProviders = [
+            { name: "Cloudflare",     endpoint: "https://cloudflare-dns.com/dns-query",          color: "#f6821f" },
+            { name: "Google",         endpoint: "https://dns.google/resolve",                    color: "#4285f4" },
+            { name: "Quad9",          endpoint: "https://dns.quad9.net/dns-query",               color: "#0066cc" },
+            { name: "AdGuard",        endpoint: "https://dns.adguard-dns.com/dns-query",         color: "#68b35c" },
+            { name: "Control D",      endpoint: "https://freedns.controld.com/p1",               color: "#00c4b4" },
+            { name: "Mullvad",        endpoint: "https://doh.mullvad.net/dns-query",             color: "#7e3ff2" },
+            { name: "NextDNS",        endpoint: "https://dns.nextdns.io",                        color: "#ff6b00" },
+            { name: "OpenDNS",        endpoint: "https://doh.opendns.com/dns-query",             color: "#0070d2" },
+            { name: "CleanBrowsing",  endpoint: "https://doh.cleanbrowsing.org/doh/family-filter/", color: "#00a86b" }
+        ];
+
+        async function runDNSTest() {
+            const resultsBody = document.getElementById('test-results-body');
+            const resultsTable = document.getElementById('test-results');
+            
+            resultsBody.innerHTML = '';
+            resultsTable.classList.remove('hidden');
+
+            showToast('Running DNS performance test from your network...');
+
+            const testDomain = 'example.com';
+            const queriesPerProvider = 5;
+
+            for (const provider of dnsProviders) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="px-6 py-4 font-medium">
+                        <div class="flex items-center gap-x-3">
+                            <div class="w-3 h-3 rounded-full" style="background: ${provider.color}"></div>
+                            <span>${provider.name}</span>
+                        </div>
+                    </td>
+                    <td class="px-4 py-4 text-right font-mono text-lg text-zinc-300">—</td>
+                    <td class="px-4 py-4 text-center"><span class="text-xs px-2.5 py-1 rounded-full bg-zinc-800">Testing...</span></td>
+                    <td class="px-4 py-4 text-center">—</td>
+                    <td class="px-6 py-4 text-sm text-zinc-400">Running...</td>
+                `;
+                resultsBody.appendChild(row);
+
+                // Run test for this provider
+                const latencies = [];
+                let successCount = 0;
+                let dnssecValidated = false;
+
+                for (let i = 0; i < queriesPerProvider; i++) {
+                    try {
+                        const start = performance.now();
+                        
+                        const url = `${provider.endpoint}?name=${testDomain}&type=A`;
+                        const res = await fetch(url, { 
+                            headers: { 'Accept': 'application/dns-json' } 
+                        });
+                        
+                        const data = await res.json();
+                        const end = performance.now();
+                        
+                        if (data.Answer && data.Answer.length > 0) {
+                            successCount++;
+                            latencies.push(end - start);
+                            
+                            if (typeof data.AD === 'boolean' && data.AD) {
+                                dnssecValidated = true;
+                            }
+                        }
+                    } catch (e) {
+                        // Failed query
+                    }
+                }
+
+                // Calculate results
+                const avgLatency = latencies.length > 0 
+                    ? Math.round(latencies.reduce((a, b) => a + b, 0) / latencies.length) 
+                    : null;
+                
+                const successRate = Math.round((successCount / queriesPerProvider) * 100);
+
+                // Update row
+                const cells = row.children;
+                
+                // Latency
+                if (avgLatency !== null) {
+                    let latencyColor = 'text-emerald-400';
+                    if (avgLatency > 80) latencyColor = 'text-amber-400';
+                    if (avgLatency > 150) latencyColor = 'text-red-400';
+                    
+                    cells[1].innerHTML = `<span class="font-mono text-lg ${latencyColor}">${avgLatency} <span class="text-xs text-zinc-500">ms</span></span>`;
+                } else {
+                    cells[1].innerHTML = `<span class="text-red-400">Failed</span>`;
+                }
+
+                // Success rate
+                let successHTML = '';
+                if (successRate === 100) {
+                    successHTML = `<span class="text-emerald-400 font-medium">${successRate}%</span>`;
+                } else if (successRate >= 80) {
+                    successHTML = `<span class="text-amber-400">${successRate}%</span>`;
+                } else {
+                    successHTML = `<span class="text-red-400">${successRate}%</span>`;
+                }
+                cells[2].innerHTML = successHTML;
+
+                // DNSSEC
+                cells[3].innerHTML = dnssecValidated 
+                    ? `<span class="text-emerald-400 text-xs px-2 py-0.5 bg-emerald-950 rounded">Validated</span>` 
+                    : `<span class="text-zinc-500 text-xs">—</span>`;
+
+                // Recommendation
+                let recommendation = '';
+                if (avgLatency !== null && successRate === 100) {
+                    if (avgLatency < 30) {
+                        recommendation = `<span class="text-emerald-400 font-medium">Excellent</span>`;
+                    } else if (avgLatency < 60) {
+                        recommendation = `<span class="text-teal-400">Very Good</span>`;
+                    } else if (avgLatency < 100) {
+                        recommendation = `<span class="text-amber-400">Good</span>`;
+                    } else {
+                        recommendation = `<span class="text-orange-400">Acceptable</span>`;
+                    }
+                } else if (successRate < 80) {
+                    recommendation = `<span class="text-red-400">Unreliable</span>`;
+                } else {
+                    recommendation = `<span class="text-zinc-400">—</span>`;
+                }
+                cells[4].innerHTML = recommendation;
+            }
+
+            showToast('DNS test complete!');
+        }
+
+        async function testCustomEndpoint() {
+            const input = document.getElementById('custom-doh-input').value.trim();
+            if (!input) {
+                showToast('Please enter a DoH endpoint URL', 'error');
+                return;
+            }
+
+            const resultsBody = document.getElementById('test-results-body');
+            const resultsTable = document.getElementById('test-results');
+            
+            resultsTable.classList.remove('hidden');
+
+            // Add a row for the custom endpoint
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td class="px-6 py-4 font-medium">
+                    <div class="flex items-center gap-x-3">
+                        <div class="w-3 h-3 rounded-full bg-zinc-400"></div>
+                        <span class="font-mono text-sm">${input.length > 40 ? input.substring(0, 37) + '...' : input}</span>
+                    </div>
+                </td>
+                <td class="px-4 py-4 text-right font-mono text-lg text-zinc-300">Testing...</td>
+                <td class="px-4 py-4 text-center"><span class="text-xs px-2.5 py-1 rounded-full bg-zinc-800">Testing...</span></td>
+                <td class="px-4 py-4 text-center">—</td>
+                <td class="px-6 py-4 text-sm text-zinc-400">Running custom test...</td>
+            `;
+            resultsBody.appendChild(row);
+
+            const testDomain = 'example.com';
+            const queries = 5;
+            const latencies = [];
+            let successCount = 0;
+            let dnssecValidated = false;
+
+            for (let i = 0; i < queries; i++) {
+                try {
+                    const start = performance.now();
+                    const url = `${input}?name=${testDomain}&type=A`;
+                    const res = await fetch(url, { headers: { 'Accept': 'application/dns-json' } });
+                    const data = await res.json();
+                    const end = performance.now();
+
+                    if (data.Answer && data.Answer.length > 0) {
+                        successCount++;
+                        latencies.push(end - start);
+                        if (typeof data.AD === 'boolean' && data.AD) dnssecValidated = true;
+                    }
+                } catch (e) {}
+            }
+
+            const avgLatency = latencies.length > 0 
+                ? Math.round(latencies.reduce((a, b) => a + b, 0) / latencies.length) 
+                : null;
+            const successRate = Math.round((successCount / queries) * 100);
+
+            const cells = row.children;
+
+            // Latency
+            if (avgLatency !== null) {
+                let latencyColor = 'text-emerald-400';
+                if (avgLatency > 80) latencyColor = 'text-amber-400';
+                if (avgLatency > 150) latencyColor = 'text-red-400';
+                cells[1].innerHTML = `<span class="font-mono text-lg ${latencyColor}">${avgLatency} <span class="text-xs text-zinc-500">ms</span></span>`;
+            } else {
+                cells[1].innerHTML = `<span class="text-red-400">Failed</span>`;
+            }
+
+            // Success
+            cells[2].innerHTML = successRate === 100 
+                ? `<span class="text-emerald-400 font-medium">${successRate}%</span>` 
+                : `<span class="text-amber-400">${successRate}%</span>`;
+
+            // DNSSEC
+            cells[3].innerHTML = dnssecValidated 
+                ? `<span class="text-emerald-400 text-xs px-2 py-0.5 bg-emerald-950 rounded">Validated</span>` 
+                : `<span class="text-zinc-500 text-xs">—</span>`;
+
+            // Recommendation
+            let rec = '—';
+            if (avgLatency !== null && successRate >= 80) {
+                if (avgLatency < 40) rec = `<span class="text-emerald-400 font-medium">Excellent</span>`;
+                else if (avgLatency < 80) rec = `<span class="text-teal-400">Good</span>`;
+                else rec = `<span class="text-amber-400">Acceptable</span>`;
+            } else if (successRate < 80) {
+                rec = `<span class="text-red-400">Unreliable</span>`;
+            }
+            cells[4].innerHTML = rec;
+
+            showToast('Custom endpoint test complete');
+        }
+
+        // Boot the application
+        window.onload = initializeApp;
     </script>
 </body>
 </html>
