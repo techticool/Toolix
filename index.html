@@ -557,8 +557,20 @@
             <!-- Test Controls -->
             <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-6 mb-6">
                 <div class="flex flex-col items-center text-center">
-                    <div id="speed-display" class="text-6xl font-mono font-semibold tabular-nums mb-1 text-teal-400">--</div>
-                    <div class="text-sm text-zinc-400 mb-6">Mbps</div>
+                    <!-- Live Speed -->
+                    <div class="mb-4">
+                        <div id="speed-display" class="text-7xl font-mono font-semibold tabular-nums text-teal-400">--</div>
+                        <div class="text-sm text-zinc-400 -mt-1">Download (Mbps)</div>
+                    </div>
+
+                    <!-- Latency -->
+                    <div class="mb-6">
+                        <div class="flex items-baseline gap-x-2">
+                            <span class="text-sm text-zinc-400">Latency:</span>
+                            <span id="latency-display" class="font-mono text-3xl font-semibold text-amber-400">--</span>
+                            <span class="text-xs text-zinc-500">ms</span>
+                        </div>
+                    </div>
 
                     <button id="speed-test-btn" onclick="runSpeedTest()"
                             class="px-10 py-4 bg-teal-600 hover:bg-teal-700 active:bg-teal-800 transition-all text-white font-semibold text-lg rounded-2xl flex items-center gap-x-3">
@@ -1659,6 +1671,27 @@
         let speedTestRunning = false;
         let speedTestAbortController = null;
 
+        async function measureLatency() {
+            const pings = [];
+            const testUrl = 'https://www.google.com/favicon.ico';
+
+            for (let i = 0; i < 5; i++) {
+                try {
+                    const start = performance.now();
+                    await fetch(testUrl, { method: 'HEAD', mode: 'no-cors', cache: 'no-store' });
+                    const end = performance.now();
+                    pings.push(end - start);
+                } catch (e) {
+                    // Ignore individual failures
+                }
+            }
+
+            if (pings.length === 0) return '--';
+
+            const avg = pings.reduce((a, b) => a + b, 0) / pings.length;
+            return Math.round(avg);
+        }
+
         async function runSpeedTest() {
             const btn = document.getElementById('speed-test-btn');
             const btnText = document.getElementById('speed-btn-text');
@@ -1677,7 +1710,14 @@
             speedTestRunning = true;
             btnText.textContent = 'Cancel Test';
             display.textContent = '0.0';
-            status.textContent = 'Testing...';
+            document.getElementById('latency-display').textContent = '--';
+            status.textContent = 'Measuring latency...';
+
+            // Measure Latency first
+            const latency = await measureLatency();
+            document.getElementById('latency-display').textContent = latency;
+
+            status.textContent = 'Testing download speed...';
 
             const testSize = parseInt(document.getElementById('test-size').value);
             const connections = parseInt(document.getElementById('parallel-connections').value);
