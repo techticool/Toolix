@@ -254,7 +254,7 @@
                 <button onclick="copyAllResults()" 
                         class="flex items-center gap-x-2 px-4 py-2 text-sm bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 transition-colors rounded-2xl">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16v-4m4 4v4m4-8v8m4-4v-4m-16 8h16a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                     </svg>
                     <span>Copy all</span>
                 </button>
@@ -295,7 +295,7 @@
                         <button onclick="copyField('result-ip', 'IP address')" 
                                 class="mt-1 p-2 text-zinc-400 hover:text-teal-400 hover:bg-zinc-800 rounded-xl transition-colors">
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.25" d="M8 16v-4m4 4v4m4-8v8m4-4v-4m-16 8h16a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.25" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                             </svg>
                         </button>
                     </div>
@@ -309,7 +309,7 @@
                         <button onclick="copyField('result-hostname', 'Hostname')" 
                                 class="mt-1 p-2 text-zinc-400 hover:text-teal-400 hover:bg-zinc-800 rounded-xl transition-colors flex-shrink-0">
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.25" d="M8 16v-4m4 4v4m4-8v8m4-4v-4m-16 8h16a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.25" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                             </svg>
                         </button>
                     </div>
@@ -1299,6 +1299,13 @@
                 if (res && window.hasIPResults) {
                     res.classList.remove('hidden');
                 }
+
+                // Fix map rendering issues when tab becomes visible
+                if (mapInstance) {
+                    setTimeout(() => {
+                        mapInstance.invalidateSize();
+                    }, 100);
+                }
             } 
             else if (tab === 'dns') {
                 dnsSection.classList.remove('hidden');
@@ -1444,7 +1451,7 @@
                         <button onclick="copyToClipboard('${data.replace(/'/g, "\\'")}', '${type} record')" 
                                 class="opacity-0 group-hover:opacity-100 p-2 text-zinc-400 hover:text-teal-400 transition-all flex-shrink-0">
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16v-4m4 4v4m4-8v8m4-4v-4m-16 8h16a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                             </svg>
                         </button>
                     </div>
