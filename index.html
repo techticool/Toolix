@@ -69,6 +69,15 @@
             border-radius: 16px;
             overflow: hidden;
             box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            position: relative;
+        }
+
+        /* Protect Leaflet tiles from Tailwind/CSS interference */
+        .leaflet-tile {
+            image-rendering: crisp-edges;
+        }
+        .leaflet-container {
+            background: #18181b !important;
         }
 
         .ip-value {
@@ -1073,6 +1082,11 @@
             } else {
                 mapInstance.setView([lat, lon], 11);
             }
+
+            // Ensure proper rendering
+            setTimeout(() => {
+                if (mapInstance) mapInstance.invalidateSize();
+            }, 100);
             
             // Remove old marker
             if (currentMarker) {
@@ -1369,7 +1383,7 @@
                 if (mapInstance) {
                     setTimeout(() => {
                         mapInstance.invalidateSize();
-                    }, 100);
+                    }, 150);
                 }
             } 
             else if (tab === 'dns') {
