@@ -753,6 +753,8 @@
                         displayResults(data);
                         resultsSection.classList.remove('hidden');
                         resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+                        window.hasIPResults = true;
                         
                         try {
                             localStorage.setItem('lastIPLookup', JSON.stringify({
@@ -1263,16 +1265,23 @@
             const ipSection = document.getElementById('ip-section');
             const dnsSection = document.getElementById('dns-section');
             const testSection = document.getElementById('test-section');
+            const resultsSection = document.getElementById('results-section');
+
             const tabIP = document.getElementById('tab-ip');
             const tabDNS = document.getElementById('tab-dns');
             const tabTest = document.getElementById('tab-test');
 
-            // Hide all
+            // Hide all main sections
             ipSection.classList.add('hidden');
             dnsSection.classList.add('hidden');
             if (testSection) testSection.classList.add('hidden');
 
-            // Reset all tabs
+            // Hide IP results when leaving the IP tab
+            if (resultsSection) {
+                resultsSection.classList.add('hidden');
+            }
+
+            // Reset tab styles
             tabIP.classList.remove('bg-zinc-800', 'text-white');
             tabIP.classList.add('text-zinc-400');
             tabDNS.classList.remove('bg-zinc-800', 'text-white');
@@ -1286,11 +1295,18 @@
                 ipSection.classList.remove('hidden');
                 tabIP.classList.add('bg-zinc-800', 'text-white');
                 tabIP.classList.remove('text-zinc-400');
-            } else if (tab === 'dns') {
+
+                // Restore results if user had performed a lookup before
+                if (resultsSection && window.hasIPResults) {
+                    resultsSection.classList.remove('hidden');
+                }
+            } 
+            else if (tab === 'dns') {
                 dnsSection.classList.remove('hidden');
                 tabDNS.classList.add('bg-zinc-800', 'text-white');
                 tabDNS.classList.remove('text-zinc-400');
-            } else if (tab === 'test') {
+            } 
+            else if (tab === 'test') {
                 if (testSection) testSection.classList.remove('hidden');
                 if (tabTest) {
                     tabTest.classList.add('bg-zinc-800', 'text-white');
