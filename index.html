@@ -158,6 +158,8 @@
                         class="px-4 py-1.5 rounded-xl text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800 transition-all text-sm">DNS LOOKUP</button>
                 <button onclick="switchTab('test')" id="tab-test"
                         class="px-4 py-1.5 rounded-xl text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800 transition-all text-sm">DNS Test</button>
+                <button onclick="switchTab('speed')" id="tab-speed"
+                        class="px-4 py-1.5 rounded-xl text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800 transition-all text-sm">Speed Test</button>
             </div>
             
             <div class="flex items-center gap-x-2 text-sm">
@@ -528,6 +530,66 @@
                         <!-- Populated by JavaScript -->
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Speed Test Section -->
+    <div id="speed-section" class="hidden max-w-screen-xl mx-auto px-6 pt-8 pb-16">
+        <div class="max-w-2xl mx-auto">
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center gap-x-2 px-4 py-1.5 rounded-3xl bg-zinc-900 border border-zinc-800 mb-4">
+                    <span class="text-emerald-400 text-xs font-medium tracking-[1px]">NETWORK TEST</span>
+                </div>
+                <h2 class="text-4xl font-display tracking-tighter font-semibold mb-2">Internet Speed Test</h2>
+                <p class="text-zinc-400">Measure your real download speed from your browser.</p>
+            </div>
+
+            <!-- Test Controls -->
+            <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-6 mb-6">
+                <div class="flex flex-col items-center text-center">
+                    <div id="speed-display" class="text-6xl font-mono font-semibold tabular-nums mb-1 text-teal-400">--</div>
+                    <div class="text-sm text-zinc-400 mb-6">Mbps</div>
+
+                    <button id="speed-test-btn" onclick="runSpeedTest()"
+                            class="px-10 py-4 bg-teal-600 hover:bg-teal-700 active:bg-teal-800 transition-all text-white font-semibold text-lg rounded-2xl flex items-center gap-x-3">
+                        <span id="speed-btn-text">Start Test</span>
+                    </button>
+
+                    <div id="speed-status" class="mt-4 text-sm text-zinc-400 h-5"></div>
+                </div>
+            </div>
+
+            <!-- Advanced Options -->
+            <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="font-medium">Advanced Options</div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Test Size -->
+                    <div>
+                        <label class="block text-xs text-zinc-400 mb-1.5">TEST FILE SIZE</label>
+                        <select id="test-size" class="w-full bg-zinc-950 border border-zinc-700 rounded-2xl px-4 py-2.5 text-sm">
+                            <option value="10000000">10 MB</option>
+                            <option value="25000000" selected>25 MB</option>
+                            <option value="50000000">50 MB</option>
+                        </select>
+                    </div>
+
+                    <!-- Parallel Connections -->
+                    <div>
+                        <label class="block text-xs text-zinc-400 mb-1.5">PARALLEL CONNECTIONS</label>
+                        <select id="parallel-connections" class="w-full bg-zinc-950 border border-zinc-700 rounded-2xl px-4 py-2.5 text-sm">
+                            <option value="1">1 (Single)</option>
+                            <option value="4" selected>4 (Multi)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6 text-center text-xs text-zinc-500">
+                This test measures download speed only. Results are estimates from your browser.
             </div>
         </div>
     </div>
@@ -1264,16 +1326,19 @@
             const ipSection = document.getElementById('ip-section');
             const dnsSection = document.getElementById('dns-section');
             const testSection = document.getElementById('test-section');
+            const speedSection = document.getElementById('speed-section');
             const resultsSection = document.getElementById('results-section');
 
             const tabIP = document.getElementById('tab-ip');
             const tabDNS = document.getElementById('tab-dns');
             const tabTest = document.getElementById('tab-test');
+            const tabSpeed = document.getElementById('tab-speed');
 
             // Hide all main sections
             ipSection.classList.add('hidden');
             dnsSection.classList.add('hidden');
             if (testSection) testSection.classList.add('hidden');
+            if (speedSection) speedSection.classList.add('hidden');
 
             // Always hide IP results when not on IP tab (robust fix)
             const results = document.getElementById('results-section');
@@ -1317,6 +1382,13 @@
                 if (tabTest) {
                     tabTest.classList.add('bg-zinc-800', 'text-white');
                     tabTest.classList.remove('text-zinc-400');
+                }
+            }
+            else if (tab === 'speed') {
+                if (speedSection) speedSection.classList.remove('hidden');
+                if (tabSpeed) {
+                    tabSpeed.classList.add('bg-zinc-800', 'text-white');
+                    tabSpeed.classList.remove('text-zinc-400');
                 }
             }
         }
@@ -1562,6 +1634,100 @@
 
             html += '</div>';
             container.innerHTML = html;
+        }
+
+        // ===================== INTERNET SPEED TEST =====================
+
+        let speedTestRunning = false;
+        let speedTestAbortController = null;
+
+        async function runSpeedTest() {
+            const btn = document.getElementById('speed-test-btn');
+            const btnText = document.getElementById('speed-btn-text');
+            const display = document.getElementById('speed-display');
+            const status = document.getElementById('speed-status');
+
+            if (speedTestRunning) {
+                // Cancel current test
+                if (speedTestAbortController) speedTestAbortController.abort();
+                speedTestRunning = false;
+                btnText.textContent = 'Start Test';
+                status.textContent = 'Test cancelled';
+                return;
+            }
+
+            speedTestRunning = true;
+            btnText.textContent = 'Cancel Test';
+            display.textContent = '0.0';
+            status.textContent = 'Testing...';
+
+            const testSize = parseInt(document.getElementById('test-size').value);
+            const connections = parseInt(document.getElementById('parallel-connections').value);
+
+            speedTestAbortController = new AbortController();
+            const { signal } = speedTestAbortController;
+
+            try {
+                const startTime = performance.now();
+                let totalBytes = 0;
+                let completedConnections = 0;
+
+                const downloadPromises = [];
+
+                for (let i = 0; i < connections; i++) {
+                    const promise = (async () => {
+                        const url = `https://speed.cloudflare.com/__down?bytes=${testSize}`;
+                        const response = await fetch(url, { signal });
+                        const reader = response.body.getReader();
+
+                        let received = 0;
+                        while (true) {
+                            const { done, value } = await reader.read();
+                            if (done) break;
+                            received += value.length;
+                            totalBytes += value.length;
+
+                            // Update live speed every ~100ms
+                            const elapsed = (performance.now() - startTime) / 1000;
+                            if (elapsed > 0) {
+                                const currentSpeed = (totalBytes * 8) / (elapsed * 1000000); // Mbps
+                                display.textContent = currentSpeed.toFixed(1);
+                            }
+                        }
+                        completedConnections++;
+                    })();
+                    downloadPromises.push(promise);
+                }
+
+                await Promise.all(downloadPromises);
+
+                const endTime = performance.now();
+                const duration = (endTime - startTime) / 1000;
+                const speedMbps = (totalBytes * 8) / (duration * 1000000);
+
+                display.textContent = speedMbps.toFixed(1);
+
+                let rating = '';
+                if (speedMbps > 100) rating = 'Excellent';
+                else if (speedMbps > 50) rating = 'Very Good';
+                else if (speedMbps > 25) rating = 'Good';
+                else if (speedMbps > 10) rating = 'Fair';
+                else rating = 'Slow';
+
+                status.innerHTML = `Completed in ${duration.toFixed(1)}s • <span class="text-teal-400">${rating}</span>`;
+
+            } catch (error) {
+                if (error.name === 'AbortError') {
+                    status.textContent = 'Test cancelled';
+                } else {
+                    display.textContent = 'Error';
+                    status.textContent = 'Test failed. Please try again.';
+                }
+            } finally {
+                speedTestRunning = false;
+                btnText.textContent = 'Start Test';
+                speedTestAbortController = null;
+            }
         }
 
         // ===================== DNS PROVIDER TEST =====================
